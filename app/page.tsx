@@ -182,10 +182,11 @@ export default function Home() {
         <div className={styles.formStage}>
           <div className={styles.formContainer}>
             <h2>Confirma tu Asistencia</h2>
-            <form onSubmit={handleSubmitForm1}>
+            <form className={styles.form} onSubmit={handleSubmitForm1}>
               <div className={styles.formGroup}>
-                <label htmlFor="nombres">Tu Nombre</label>
+                <label className={styles.formGroupLabel} htmlFor="nombres">Tu Nombre</label>
                 <input
+                  className={styles.formInput}
                   type="text"
                   id="nombres"
                   name="nombres"
@@ -197,8 +198,9 @@ export default function Home() {
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="apellidos">Tus Apellidos</label>
+                <label className={styles.formGroupLabel} htmlFor="apellidos">Tus Apellidos</label>
                 <input
+                  className={styles.formInput}
                   type="text"
                   id="apellidos"
                   name="apellidos"
@@ -210,10 +212,11 @@ export default function Home() {
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="acompanante">
+                <label className={styles.formGroupLabel} htmlFor="acompanante">
                   Nombre del Acompañante (opcional)
                 </label>
                 <input
+                  className={styles.formInput}
                   type="text"
                   id="acompanante"
                   name="acompanante"
@@ -224,7 +227,7 @@ export default function Home() {
               </div>
 
               <div className={styles.formGroup}>
-                <label>¿Cuántos niños asisten contigo?</label>
+                <label className={styles.formGroupLabel}>¿Cuántos niños asisten contigo?</label>
                 <div className={styles.buttonGroup}>
                   {['0', '1', '2', '3'].map(num => (
                     <button
@@ -289,7 +292,7 @@ export default function Home() {
               Debes llegar puntual a la fiesta para ganarlo
             </p>
 
-            <div className={styles.choicesContainer}>
+            <div className={styles.choicesContainer} role="group">
               <button
                 className={styles.choiceBtn}
                 onClick={() => handlePunctualityChoice('si')}
