@@ -312,15 +312,6 @@ export default function Home() {
               ¡Gracias por anotarte! 🎉 <br />
               Y habrán premios a los primeros en llegar 🎁
             </p>
-
-            <div className={styles.mapContainer}>
-              <iframe
-                className={styles.mapEmbed}
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.8234567890123!2d-76.12345!3d-12.04567!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c7c8d5c6c6c7%3A0x1234567890abcdef!2sAv.%20Bel%C3%A1inde%201220%2C%20Condominio%20Villa%20los%20Molles!5e0!3m2!1ses!2spe!4v1234567890123"
-                allowFullScreen={true}
-                loading="lazy"
-              />
-            </div>
           </div>
           <button
             className={styles.pulsatingBtn}
