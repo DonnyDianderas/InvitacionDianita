@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import styles from './page.module.css'
 
-type Stage = 'cover' | 'video1' | 'form1' | 'video2' | 'form2'
+type Stage = 'cover' | 'video1' | 'form1' | 'video2' | 'form2' | 'final'
 
 interface FormData {
   nombres: string
@@ -123,7 +123,7 @@ export default function Home() {
         throw new Error('Error al guardar respuesta')
       }
 
-      setStage('form2')
+      setStage('final')
     } catch (err) {
       setError('Error al guardar respuesta. Por favor intenta de nuevo.')
       console.error(err)
@@ -313,6 +313,34 @@ export default function Home() {
             </div>
 
             {error && <p className={styles.error}>{error}</p>}
+          </div>
+        </div>
+      )}
+
+      {stage === 'final' && (
+        <div className={styles.finalStage}>
+          <div className={styles.finalContent}>
+            <div className={styles.invitationImageContainer}>
+              <img
+                src="/images/Invitación de Cumpleaños Dianita.jpg"
+                alt="Invitación de Cumpleaños Dianita"
+                className={styles.invitationImage}
+              />
+            </div>
+            <div className={styles.finalButtons}>
+              <button
+                className={styles.primaryBtn}
+                onClick={() => setStage('cover')}
+              >
+                🏠 Volver al Inicio
+              </button>
+              <button
+                className={styles.closeBtn}
+                onClick={() => window.close()}
+              >
+                ✕ Cerrar
+              </button>
+            </div>
           </div>
         </div>
       )}
