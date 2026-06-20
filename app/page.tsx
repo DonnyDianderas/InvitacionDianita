@@ -308,6 +308,11 @@ export default function Home() {
               </video>
             </div>
 
+            <p className={styles.scriptText}>
+              ¡Gracias por anotarte! 🎉 <br />
+              Y habrán premios a los primeros en llegar 🎁
+            </p>
+
             <div className={styles.mapContainer}>
               <iframe
                 className={styles.mapEmbed}
