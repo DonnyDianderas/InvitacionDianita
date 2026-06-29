@@ -236,26 +236,42 @@ export default function Home() {
     }
   }
 
-  const generatePDF = async () => {
+  const generatePDF = () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/admin/export-pdf')
-      if (!response.ok) throw new Error('Error al generar PDF')
 
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
+      // Crear CSV
+      const headers = ['Nombre y Apellido', 'Acompañante', 'Niños']
+      const rows = confirmaciones.map(c => [
+        `${c.nombres} ${c.apellidos}`,
+        c.acompanante || '-',
+        c.ninos_asisten,
+      ])
+
+      // Crear contenido CSV
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(',')),
+      ].join('\n')
+
+      // Crear blob y descargar
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
       const link = document.createElement('a')
-      link.href = url
-      link.download = 'Listado_Asistencia_Dianita.pdf'
+      const url = URL.createObjectURL(blob)
+
+      link.setAttribute('href', url)
+      link.setAttribute('download', 'Listado_Asistencia_Dianita.csv')
+      link.style.visibility = 'hidden'
+
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
-      window.URL.revokeObjectURL(url)
-    } catch (err) {
-      setError('Error al descargar PDF')
-      console.error(err)
-    } finally {
+
       setLoading(false)
+    } catch (err) {
+      setError('Error al descargar listado')
+      setLoading(false)
+      console.error(err)
     }
   }
 
