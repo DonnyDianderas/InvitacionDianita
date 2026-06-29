@@ -245,21 +245,18 @@ export default function Home() {
     doc.text('Lista de Asistencia - Cumpleaños Dianita', 14, 15)
 
     const tableData = confirmaciones.map(c => [
-      c.nombres,
-      c.apellidos,
+      `${c.nombres} ${c.apellidos}`,
       c.acompanante || '-',
       c.ninos_asisten,
-      c.puntualidad ? (c.puntualidad === 'si' ? 'Sí' : 'No') : '-',
-      new Date(c.created_at).toLocaleDateString('es-ES'),
     ])
 
     doc.autoTable({
-      head: [['Nombres', 'Apellidos', 'Acompañante', 'Niños', 'Puntual', 'Fecha']],
+      head: [['Nombre y Apellido', 'Acompañante', 'Niños']],
       body: tableData,
       startY: 25,
     })
 
-    doc.save('Lista_Asistencia_Dianita.pdf')
+    doc.save('Listado_Asistencia_Dianita.pdf')
   }
 
   return (
@@ -273,16 +270,17 @@ export default function Home() {
               Te esperamos en una aventura marina llena de magia
             </p>
             <button
+              className={styles.adminButtonFixed}
+              onClick={() => setStage('admin-login')}
+              title="Panel de Administrador"
+            >
+              ⚙️
+            </button>
+            <button
               className={styles.primaryBtn}
               onClick={() => setStage('video1')}
             >
               ¡Entrar!
-            </button>
-            <button
-              className={styles.adminBtn}
-              onClick={() => setStage('admin-login')}
-            >
-              👨‍💼 Administrador
             </button>
           </div>
         </div>
@@ -543,7 +541,7 @@ export default function Home() {
                 ➕ Agregar Nuevo
               </button>
               <button className={styles.primaryBtn} onClick={generatePDF}>
-                📥 Descargar PDF
+                📥 Descargar Listado
               </button>
               <button
                 className={styles.closeBtn}
@@ -559,11 +557,9 @@ export default function Home() {
               <table className={styles.adminTable}>
                 <thead>
                   <tr>
-                    <th>Nombres</th>
-                    <th>Apellidos</th>
+                    <th>Nombre y Apellido</th>
                     <th>Acompañante</th>
                     <th>Niños</th>
-                    <th>Puntual</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
@@ -573,28 +569,32 @@ export default function Home() {
                       {editingId === conf.id ? (
                         <>
                           <td>
-                            <input
-                              className={styles.tableInput}
-                              value={editFormData.nombres || ''}
-                              onChange={(e) =>
-                                setEditFormData({
-                                  ...editFormData,
-                                  nombres: e.target.value,
-                                })
-                              }
-                            />
-                          </td>
-                          <td>
-                            <input
-                              className={styles.tableInput}
-                              value={editFormData.apellidos || ''}
-                              onChange={(e) =>
-                                setEditFormData({
-                                  ...editFormData,
-                                  apellidos: e.target.value,
-                                })
-                              }
-                            />
+                            <div style={{ display: 'flex', gap: '5px' }}>
+                              <input
+                                className={styles.tableInput}
+                                value={editFormData.nombres || ''}
+                                onChange={(e) =>
+                                  setEditFormData({
+                                    ...editFormData,
+                                    nombres: e.target.value,
+                                  })
+                                }
+                                placeholder="Nombre"
+                                style={{ flex: 1 }}
+                              />
+                              <input
+                                className={styles.tableInput}
+                                value={editFormData.apellidos || ''}
+                                onChange={(e) =>
+                                  setEditFormData({
+                                    ...editFormData,
+                                    apellidos: e.target.value,
+                                  })
+                                }
+                                placeholder="Apellido"
+                                style={{ flex: 1 }}
+                              />
+                            </div>
                           </td>
                           <td>
                             <input
@@ -622,22 +622,6 @@ export default function Home() {
                             />
                           </td>
                           <td>
-                            <select
-                              className={styles.tableInput}
-                              value={editFormData.puntualidad || ''}
-                              onChange={(e) =>
-                                setEditFormData({
-                                  ...editFormData,
-                                  puntualidad: e.target.value || null,
-                                })
-                              }
-                            >
-                              <option value="">-</option>
-                              <option value="si">Sí</option>
-                              <option value="no">No</option>
-                            </select>
-                          </td>
-                          <td>
                             <button
                               className={styles.actionBtnSmall}
                               onClick={handleSaveEdit}
@@ -654,17 +638,11 @@ export default function Home() {
                         </>
                       ) : (
                         <>
-                          <td>{conf.nombres}</td>
-                          <td>{conf.apellidos}</td>
+                          <td>
+                            {conf.nombres} {conf.apellidos}
+                          </td>
                           <td>{conf.acompanante || '-'}</td>
                           <td>{conf.ninos_asisten}</td>
-                          <td>
-                            {conf.puntualidad
-                              ? conf.puntualidad === 'si'
-                                ? '✅ Sí'
-                                : '❌ No'
-                              : '-'}
-                          </td>
                           <td>
                             <button
                               className={styles.actionBtn}

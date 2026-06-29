@@ -24,6 +24,29 @@
   text-align: center;
   z-index: 10;
   animation: fadeInDown 0.8s ease-out;
+  position: relative;
+}
+
+.adminButtonFixed {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 100;
+  padding: 10px 14px;
+  background: var(--purple-main);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.6;
+}
+
+.adminButtonFixed:hover {
+  opacity: 1;
+  transform: scale(1.08);
 }
 
 .coverContent h1 {
@@ -44,11 +67,18 @@
 .invitation {
   font-size: 1.2rem;
   color: var(--text-dark);
-  margin-bottom: 40px;
+  margin-bottom: 50px;
   max-width: 300px;
   margin-left: auto;
   margin-right: auto;
   line-height: 1.6;
+}
+
+.coverContent .primaryBtn {
+  padding: 20px 50px;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  box-shadow: 0 10px 30px rgba(201, 163, 217, 0.6);
 }
 
 /* Video Stage */
@@ -522,16 +552,18 @@
 }
 
 .adminTable th {
-  padding: 12px;
+  padding: 8px;
   text-align: left;
   font-weight: 600;
   border-bottom: 2px solid var(--purple-main);
+  font-size: 0.85rem;
 }
 
 .adminTable td {
-  padding: 12px;
+  padding: 8px;
   border-bottom: 1px solid #e0e0e0;
   color: var(--text-dark);
+  font-size: 0.9rem;
 }
 
 .adminTable tbody tr:hover {
