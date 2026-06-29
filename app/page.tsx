@@ -3,7 +3,17 @@
 import { useState, useEffect } from 'react'
 import styles from './page.module.css'
 
-type Stage = 'cover' | 'video1' | 'form1' | 'video2' | 'form2' | 'final'
+type Stage = 'cover' | 'video1' | 'form1' | 'video2' | 'form2' | 'final' | 'admin-login' | 'admin'
+
+interface Confirmacion {
+  id: number
+  nombres: string
+  apellidos: string
+  acompanante: string
+  ninos_asisten: number
+  puntualidad: string | null
+  created_at: string
+}
 
 interface FormData {
   nombres: string
@@ -27,6 +37,15 @@ export default function Home() {
   const [confirmacionId, setConfirmacionId] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [adminPassword, setAdminPassword] = useState('')
+  const [confirmaciones, setConfirmaciones] = useState<Confirmacion[]>([])
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [editFormData, setEditFormData] = useState<Partial<Confirmacion>>({
+    nombres: '',
+    apellidos: '',
+    acompanante: '',
+    ninos_asisten: 0,
+  })
 
   // Crear burbujas animadas
   useEffect(() => {
@@ -132,6 +151,117 @@ export default function Home() {
     }
   }
 
+  const handleAdminLogin = () => {
+    if (adminPassword === '200919') {
+      fetchConfirmaciones()
+      setStage('admin')
+      setAdminPassword('')
+    } else {
+      setError('Contraseña incorrecta')
+    }
+  }
+
+  const fetchConfirmaciones = async () => {
+    try {
+      const response = await fetch('/api/admin/confirmaciones')
+      if (!response.ok) throw new Error('Error al obtener datos')
+      const data = await response.json()
+      setConfirmaciones(data)
+    } catch (err) {
+      setError('Error al cargar confirmaciones')
+      console.error(err)
+    }
+  }
+
+  const handleDeleteConfirmacion = async (id: number) => {
+    if (!confirm('¿Estás seguro de que quieres eliminar este registro?')) return
+
+    try {
+      const response = await fetch(`/api/admin/confirmaciones/${id}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) throw new Error('Error al eliminar')
+      setConfirmaciones(confirmaciones.filter(c => c.id !== id))
+    } catch (err) {
+      setError('Error al eliminar registro')
+      console.error(err)
+    }
+  }
+
+  const handleEditConfirmacion = (confirmacion: Confirmacion) => {
+    setEditingId(confirmacion.id)
+    setEditFormData(confirmacion)
+  }
+
+  const handleSaveEdit = async () => {
+    if (!editingId) return
+
+    try {
+      const response = await fetch(`/api/admin/confirmaciones/${editingId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editFormData),
+      })
+      if (!response.ok) throw new Error('Error al actualizar')
+      const updatedData = await response.json()
+      setConfirmaciones(
+        confirmaciones.map(c => (c.id === editingId ? updatedData : c))
+      )
+      setEditingId(null)
+      setEditFormData({})
+    } catch (err) {
+      setError('Error al guardar cambios')
+      console.error(err)
+    }
+  }
+
+  const handleAddNewConfirmacion = async () => {
+    try {
+      const response = await fetch('/api/admin/confirmaciones', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombres: 'Nuevo',
+          apellidos: 'Invitado',
+          acompanante: '',
+          ninos_asisten: 0,
+        }),
+      })
+      if (!response.ok) throw new Error('Error al crear')
+      const newData = await response.json()
+      setConfirmaciones([newData, ...confirmaciones])
+    } catch (err) {
+      setError('Error al crear nuevo registro')
+      console.error(err)
+    }
+  }
+
+  const generatePDF = () => {
+    const { jsPDF } = require('jspdf')
+    require('jspdf-autotable')
+
+    const doc = new jsPDF()
+    doc.setFontSize(16)
+    doc.text('Lista de Asistencia - Cumpleaños Dianita', 14, 15)
+
+    const tableData = confirmaciones.map(c => [
+      c.nombres,
+      c.apellidos,
+      c.acompanante || '-',
+      c.ninos_asisten,
+      c.puntualidad ? (c.puntualidad === 'si' ? 'Sí' : 'No') : '-',
+      new Date(c.created_at).toLocaleDateString('es-ES'),
+    ])
+
+    doc.autoTable({
+      head: [['Nombres', 'Apellidos', 'Acompañante', 'Niños', 'Puntual', 'Fecha']],
+      body: tableData,
+      startY: 25,
+    })
+
+    doc.save('Lista_Asistencia_Dianita.pdf')
+  }
+
   return (
     <main className={styles.container}>
       {stage === 'cover' && (
@@ -147,6 +277,12 @@ export default function Home() {
               onClick={() => setStage('video1')}
             >
               ¡Entrar!
+            </button>
+            <button
+              className={styles.adminBtn}
+              onClick={() => setStage('admin-login')}
+            >
+              👨‍💼 Administrador
             </button>
           </div>
         </div>
@@ -351,6 +487,207 @@ export default function Home() {
             </div>
 
             {error && <p className={styles.error}>{error}</p>}
+          </div>
+        </div>
+      )}
+
+      {stage === 'admin-login' && (
+        <div className={styles.formStage}>
+          <div className={styles.formContainer}>
+            <h2>👋 ¡Hola Gaby!</h2>
+            <p className={styles.subtitle}>Ingresa tu contraseña de administrador</p>
+
+            <div className={styles.formGroup}>
+              <input
+                className={styles.formInput}
+                type="password"
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
+                placeholder="Contraseña"
+              />
+            </div>
+
+            {error && <p className={styles.error}>{error}</p>}
+
+            <button
+              className={styles.primaryBtn}
+              onClick={handleAdminLogin}
+              disabled={loading}
+            >
+              Ingresar
+            </button>
+
+            <button
+              className={styles.closeBtn}
+              onClick={() => {
+                setStage('cover')
+                setAdminPassword('')
+                setError('')
+              }}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {stage === 'admin' && (
+        <div className={styles.adminStage}>
+          <div className={styles.adminContainer}>
+            <h2>📊 Panel de Administrador</h2>
+            <p className={styles.subtitle}>Gestión de Asistentes</p>
+
+            <div className={styles.adminActions}>
+              <button className={styles.primaryBtn} onClick={handleAddNewConfirmacion}>
+                ➕ Agregar Nuevo
+              </button>
+              <button className={styles.primaryBtn} onClick={generatePDF}>
+                📥 Descargar PDF
+              </button>
+              <button
+                className={styles.closeBtn}
+                onClick={() => setStage('cover')}
+              >
+                Salir
+              </button>
+            </div>
+
+            {error && <p className={styles.error}>{error}</p>}
+
+            <div className={styles.tableContainer}>
+              <table className={styles.adminTable}>
+                <thead>
+                  <tr>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Acompañante</th>
+                    <th>Niños</th>
+                    <th>Puntual</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {confirmaciones.map(conf => (
+                    <tr key={conf.id}>
+                      {editingId === conf.id ? (
+                        <>
+                          <td>
+                            <input
+                              className={styles.tableInput}
+                              value={editFormData.nombres || ''}
+                              onChange={(e) =>
+                                setEditFormData({
+                                  ...editFormData,
+                                  nombres: e.target.value,
+                                })
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className={styles.tableInput}
+                              value={editFormData.apellidos || ''}
+                              onChange={(e) =>
+                                setEditFormData({
+                                  ...editFormData,
+                                  apellidos: e.target.value,
+                                })
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className={styles.tableInput}
+                              value={editFormData.acompanante || ''}
+                              onChange={(e) =>
+                                setEditFormData({
+                                  ...editFormData,
+                                  acompanante: e.target.value,
+                                })
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className={styles.tableInput}
+                              type="number"
+                              value={editFormData.ninos_asisten || 0}
+                              onChange={(e) =>
+                                setEditFormData({
+                                  ...editFormData,
+                                  ninos_asisten: parseInt(e.target.value),
+                                })
+                              }
+                            />
+                          </td>
+                          <td>
+                            <select
+                              className={styles.tableInput}
+                              value={editFormData.puntualidad || ''}
+                              onChange={(e) =>
+                                setEditFormData({
+                                  ...editFormData,
+                                  puntualidad: e.target.value || null,
+                                })
+                              }
+                            >
+                              <option value="">-</option>
+                              <option value="si">Sí</option>
+                              <option value="no">No</option>
+                            </select>
+                          </td>
+                          <td>
+                            <button
+                              className={styles.actionBtnSmall}
+                              onClick={handleSaveEdit}
+                            >
+                              ✓
+                            </button>
+                            <button
+                              className={styles.actionBtnSmallDanger}
+                              onClick={() => setEditingId(null)}
+                            >
+                              ✕
+                            </button>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td>{conf.nombres}</td>
+                          <td>{conf.apellidos}</td>
+                          <td>{conf.acompanante || '-'}</td>
+                          <td>{conf.ninos_asisten}</td>
+                          <td>
+                            {conf.puntualidad
+                              ? conf.puntualidad === 'si'
+                                ? '✅ Sí'
+                                : '❌ No'
+                              : '-'}
+                          </td>
+                          <td>
+                            <button
+                              className={styles.actionBtn}
+                              onClick={() => handleEditConfirmacion(conf)}
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              className={styles.actionBtnDanger}
+                              onClick={() =>
+                                handleDeleteConfirmacion(conf.id)
+                              }
+                            >
+                              🗑️
+                            </button>
+                          </td>
+                        </>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

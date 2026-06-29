@@ -442,6 +442,156 @@
   transform: translateY(-1px);
 }
 
+.adminBtn {
+  margin-top: 15px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #6b4d7a 0%, #9370a8 100%);
+  color: var(--white);
+  border: 2px solid var(--purple-dark);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+.adminBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(147, 112, 168, 0.6);
+}
+
+/* Admin Panel */
+.adminStage {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.6s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.adminContainer {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 1200px;
+}
+
+.adminContainer h2 {
+  color: var(--purple-dark);
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.adminActions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.adminActions .primaryBtn,
+.adminActions .closeBtn {
+  padding: 12px 24px;
+  font-size: 1rem;
+}
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 2px solid var(--purple-main);
+}
+
+.adminTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+}
+
+.adminTable thead {
+  background: linear-gradient(135deg, var(--purple-main) 0%, var(--pink-main) 100%);
+  color: var(--white);
+}
+
+.adminTable th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--purple-main);
+}
+
+.adminTable td {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  color: var(--text-dark);
+}
+
+.adminTable tbody tr:hover {
+  background: rgba(201, 163, 217, 0.1);
+}
+
+.tableInput {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid var(--purple-main);
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--text-dark);
+}
+
+.tableInput:focus {
+  outline: none;
+  border-color: var(--blue-main);
+  box-shadow: 0 0 8px rgba(77, 184, 232, 0.3);
+}
+
+.actionBtn,
+.actionBtnSmall {
+  padding: 6px 10px;
+  margin-right: 5px;
+  background: linear-gradient(135deg, var(--blue-main) 0%, var(--green-accent) 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.actionBtn:hover,
+.actionBtnSmall:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(77, 184, 232, 0.4);
+}
+
+.actionBtnDanger,
+.actionBtnSmallDanger {
+  padding: 6px 10px;
+  margin-right: 5px;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.actionBtnDanger:hover,
+.actionBtnSmallDanger:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
+}
+
 @keyframes scaleIn {
   from {
     opacity: 0;
