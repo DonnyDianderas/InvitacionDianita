@@ -236,40 +236,60 @@ export default function Home() {
     }
   }
 
-  const generatePDF = () => {
+  const generatePDF = async () => {
     try {
       setLoading(true)
+      const html2pdf = (await import('html2pdf.js')).default
 
-      // Crear CSV
-      const headers = ['Nombre y Apellido', 'Acompañante', 'Niños']
-      const rows = confirmaciones.map(c => [
-        `${c.nombres} ${c.apellidos}`,
-        c.acompanante || '-',
-        c.ninos_asisten,
-      ])
+      // Crear tabla HTML
+      const tableHtml = `
+        <div style="padding: 20px; font-family: Arial, sans-serif;">
+          <h2 style="text-align: center; color: #6b4d7a; margin-bottom: 20px;">
+            Lista de Asistencia - Cumpleaños Dianita
+          </h2>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background-color: #c9a3d9; color: white;">
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Nombre y Apellido</th>
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Acompañante</th>
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">Niños</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${confirmaciones
+                .map(
+                  c => `
+                <tr style="border: 1px solid #ddd;">
+                  <td style="border: 1px solid #ddd; padding: 8px;">${c.nombres} ${c.apellidos}</td>
+                  <td style="border: 1px solid #ddd; padding: 8px;">${c.acompanante || '-'}</td>
+                  <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${c.ninos_asisten}</td>
+                </tr>
+              `
+                )
+                .join('')}
+            </tbody>
+          </table>
+          <p style="text-align: center; margin-top: 20px; font-size: 12px; color: #999;">
+            Generado el ${new Date().toLocaleDateString('es-ES')}
+          </p>
+        </div>
+      `
 
-      // Crear contenido CSV
-      const csvContent = [
-        headers.join(','),
-        ...rows.map(row => row.map(cell => `"${cell}"`).join(',')),
-      ].join('\n')
+      const element = document.createElement('div')
+      element.innerHTML = tableHtml
 
-      // Crear blob y descargar
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-      const link = document.createElement('a')
-      const url = URL.createObjectURL(blob)
+      const options: any = {
+        margin: 10,
+        filename: 'Listado_Asistencia_Dianita.pdf',
+        image: { type: 'png', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' },
+      }
 
-      link.setAttribute('href', url)
-      link.setAttribute('download', 'Listado_Asistencia_Dianita.csv')
-      link.style.visibility = 'hidden'
-
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-
+      html2pdf().set(options).from(element).save()
       setLoading(false)
     } catch (err) {
-      setError('Error al descargar listado')
+      setError('Error al descargar PDF')
       setLoading(false)
       console.error(err)
     }
