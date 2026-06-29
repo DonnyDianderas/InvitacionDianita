@@ -236,27 +236,27 @@ export default function Home() {
     }
   }
 
-  const generatePDF = () => {
-    const { jsPDF } = require('jspdf')
-    require('jspdf-autotable')
+  const generatePDF = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/admin/export-pdf')
+      if (!response.ok) throw new Error('Error al generar PDF')
 
-    const doc = new jsPDF()
-    doc.setFontSize(16)
-    doc.text('Lista de Asistencia - Cumpleaños Dianita', 14, 15)
-
-    const tableData = confirmaciones.map(c => [
-      `${c.nombres} ${c.apellidos}`,
-      c.acompanante || '-',
-      c.ninos_asisten,
-    ])
-
-    doc.autoTable({
-      head: [['Nombre y Apellido', 'Acompañante', 'Niños']],
-      body: tableData,
-      startY: 25,
-    })
-
-    doc.save('Listado_Asistencia_Dianita.pdf')
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = 'Listado_Asistencia_Dianita.pdf'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      setError('Error al descargar PDF')
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
