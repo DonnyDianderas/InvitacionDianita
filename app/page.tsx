@@ -430,7 +430,7 @@ export default function Home() {
               <div className={styles.formGroup}>
                 <label className={styles.formGroupLabel}>¿Cuántos niños asisten contigo?</label>
                 <div className={styles.buttonGroup}>
-                  {['0', '1', '2', '3'].map(num => (
+                  {['0', '1', '2'].map(num => (
                     <button
                       key={num}
                       type="button"
