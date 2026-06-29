@@ -48,16 +48,6 @@ npm install
 
 Crea un archivo `.env.local` en la raíz del proyecto:
 
-```env
-# NeonDB Connection String
-DATABASE_URL=postgresql://user:password@ep-xxxxx.neon.tech/dbname
-```
-
-Para obtener la conexión de NeonDB:
-1. Ve a https://console.neon.tech
-2. Crea una nueva base de datos
-3. Copia la connection string
-4. Reemplázala en `.env.local`
 
 ### 4. Ejecutar en desarrollo
 ```bash
@@ -66,36 +56,6 @@ npm run dev
 
 Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-## 📦 Despliegue en Vercel
-
-### 1. Subir a GitHub
-```bash
-git remote add origin <tu-repositorio>
-git push -u origin main
-```
-
-### 2. Conectar en Vercel
-1. Ve a https://vercel.com
-2. Haz clic en "New Project"
-3. Selecciona tu repositorio
-4. Vercel detectará que es un proyecto Next.js
-
-### 3. Configurar Variables de Entorno
-En Vercel:
-1. Ve a Project Settings → Environment Variables
-2. Agrega `DATABASE_URL` con tu connection string de NeonDB
-3. Deploy
-
-## 📱 Flujo de la Aplicación
-
-1. **Portada**: Pantalla de bienvenida con estilo de invitación
-2. **Video 1**: Dianita invita a los asistentes
-3. **Formulario 1**: 
-   - Nombres y apellidos
-   - Nombre de acompañante (opcional)
-   - Cantidad de niños (0-3)
-4. **Video 2**: Video de agradecimiento
-5. **Formulario 2**: Pregunta sobre puntualidad
 
 ## 📊 Base de Datos
 
@@ -142,30 +102,6 @@ Los colores principales están definidos en `app/globals.css`:
 - Verifica que `DATABASE_URL` sea correcto
 - Asegúrate que NeonDB está activo
 - Revisa que la red permita conexiones a NeonDB
-
-### Videos no cargan
-- Verifica que los archivos están en `public/videos/`
-- Los nombres deben ser exactos:
-  - `Dianita_Invitación_cumple5.mp4`
-  - `Dianita_Gracias_cumple5.mp4`
-
-### Formulario no valida
-- Los campos "Nombres" y "Apellidos" son obligatorios
-- "Cantidad de niños" es obligatorio (default: 0)
-- "Acompañante" es opcional
-
-## 📝 Notas Futuras
-
-El proyecto está preparado para agregar:
-- Formulario 3: Pedir saludos por audio de Dianita
-- Panel de administrador para ver confirmaciones
-- Envío de confirmación por correo
-- Galería de fotos de la fiesta
-
-## 📧 Soporte
-
-Para preguntas o problemas, contacta al desarrollador.
-
 ---
 
 Hecho con ❤️ para el cumpleaños de Dianita
